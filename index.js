@@ -25,11 +25,19 @@ async function run() {
         await client.connect();
         const database = client.db("TourUp");
         const placeCollection = database.collection("places");
+        const bannerPlaceCollection = database.collection("banner-places");
 
 
         // Get API
         app.get('/places', async (req, res) => {
             const cursor = placeCollection.find({});
+            const places = await cursor.toArray();
+            res.json(places);
+        });
+
+        // Get API for banners
+        app.get('/banner/places', async (req, res) => {
+            const cursor = bannerPlaceCollection.find({});
             const places = await cursor.toArray();
             res.json(places);
         });
