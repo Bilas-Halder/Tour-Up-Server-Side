@@ -26,6 +26,7 @@ async function run() {
         const database = client.db("TourUp");
         const placeCollection = database.collection("places");
         const bannerPlaceCollection = database.collection("banner-places");
+        const orderCollection = database.collection("orders");
 
 
         // Get API
@@ -69,6 +70,12 @@ async function run() {
             // console.log('Got new place', req.body);
             // console.log('Adding to db by post API', result);
             res.json(newPlace);
+        })
+
+        app.post('/bookone', async (req, res) => {
+            const newOrder = req.body;
+            const result = await orderCollection.insertOne(newOrder);
+            res.json(newOrder);
         })
 
 
