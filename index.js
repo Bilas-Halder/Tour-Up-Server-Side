@@ -43,6 +43,14 @@ async function run() {
             res.json(places);
         });
 
+        // Get single banner API
+        app.get('/banner/places/:id', async (req, res) => {
+            const id = req.params?.id;
+            const query = { _id: ObjectID(id) };
+            const place = await bannerPlaceCollection.findOne(query);
+            res.json(place);
+        });
+
         // Get single place API
         app.get('/places/:id', async (req, res) => {
             const id = req.params?.id;
