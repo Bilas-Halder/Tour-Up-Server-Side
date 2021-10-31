@@ -51,14 +51,28 @@ async function run() {
             const place = await placeCollection.findOne(query);
             res.json(place);
         });
+        // get all orders for manage all orders
+        app.get('/getAllOrders', async (req, res) => {
+            const cursor = orderCollection.find({});
+            const orders = await cursor.toArray();
+            res.json(orders);
+        });
+
+        // get orders using email
+        app.get('/getOrders/:email', async (req, res) => {
+            const email = req.params?.email;
+            const query = { email: email };
+
+            const cursor = orderCollection.find(query);
+            const orders = await cursor.toArray();
+            res.json(orders);
+        });
 
         // DELETE API
-        app.delete('/places/:id', async (req, res) => {
+        app.delete('/myorders/:id', async (req, res) => {
             const id = req.params?.id;
             const query = { _id: ObjectID(id) };
-            const result = await placeCollection.deleteOne(query);
-
-            // console.log('delete result', result);
+            const result = await orderCollection.deleteOne(query);
             res.json(result);
         })
 
@@ -67,8 +81,6 @@ async function run() {
             const newPlace = req.body;
             const result = await placeCollection.insertOne(newPlace);
 
-            // console.log('Got new place', req.body);
-            // console.log('Adding to db by post API', result);
             res.json(newPlace);
         })
 
@@ -76,6 +88,22 @@ async function run() {
             const newOrder = req.body;
             const result = await orderCollection.insertOne(newOrder);
             res.json(newOrder);
+        })
+
+        // updating status
+        app.put('/allOrders/:id', async (req, res) => {
+            const id = req.params?.id;
+            const newOrder = req.body;
+            const query = { _id: ObjectID(id) };
+
+            const updateDoc = {
+                $set: {
+                    status: newOrder.status
+                }
+            };
+            const result = await orderCollection.updateOne(query, updateDoc)
+
+            res.json(result);
         })
 
 
@@ -95,3 +123,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Listening to port ${port}`);
 })
+//Link :- https://sheltered-ocean-54325.herokuapp.com
